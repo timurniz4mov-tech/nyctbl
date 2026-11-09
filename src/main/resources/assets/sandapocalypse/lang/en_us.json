@@ -1,0 +1,18 @@
+{
+  "itemGroup.sandapocalypse": "Sand Apocalypse",
+  "block.sandapocalypse.desert_heart": "Desert Heart",
+  "item.sandapocalypse.desert_heart": "Desert Heart",
+  "item.sandapocalypse.canteen": "Water Canteen",
+  "tooltip.sandapocalypse.canteen": "Drink to restore thirst.",
+  "tooltip.sandapocalypse.canteen_amount": "Restores: %s points.",
+  "hud.sandapocalypse.thirst": "Thirst: %s%%",
+  "message.sandapocalypse.apocalypse_started": "§6The Sand Apocalypse has begun! A Desert Heart has appeared nearby.",
+  "message.sandapocalypse.core_spawn_failed": "§cCould not find a suitable place for the Desert Heart. Try creating a new world.",
+  "message.sandapocalypse.not_thirsty": "§bYou are not thirsty yet.",
+  "message.sandapocalypse.drink": "§bThirst restored: %s%%",
+  "item.sandapocalypse.desert_charm": "Thirst Charm",
+  "item.sandapocalypse.sand_ward": "Sand Ward",
+  "entity.sandapocalypse.dune_stalker": "Dune Stalker",
+  "entity.sandapocalypse.desert_colossus": "Desert Colossus",
+  "entity.sandapocalypse.desert_master": "Desert Master"
+}

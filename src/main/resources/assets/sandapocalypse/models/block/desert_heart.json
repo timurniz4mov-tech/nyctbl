@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "sandapocalypse:block/desert_heart",
+    "particle": "sandapocalypse:block/desert_heart"
+  }
+}
