@@ -3,7 +3,6 @@ package ru.sandapocalypse.sandapocalypse.registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -17,9 +16,9 @@ public final class ModItems {
     public static final RegistryObject<Item> DESERT_CHARM = ITEMS.register("desert_charm", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> SAND_WARD = ITEMS.register("sand_ward", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> STORM_GOGGLES = ITEMS.register("storm_goggles", () -> new Item(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<Item> DESERT_HELMET = ITEMS.register("desert_helmet", () -> new ArmorItem(DesertArmorMaterial.DESERT, EquipmentSlot.HEAD, new Item.Properties()));
-    public static final RegistryObject<Item> DESERT_CHESTPLATE = ITEMS.register("desert_chestplate", () -> new ArmorItem(DesertArmorMaterial.DESERT, EquipmentSlot.CHEST, new Item.Properties()));
-    public static final RegistryObject<Item> DESERT_LEGGINGS = ITEMS.register("desert_leggings", () -> new ArmorItem(DesertArmorMaterial.DESERT, EquipmentSlot.LEGS, new Item.Properties()));
-    public static final RegistryObject<Item> DESERT_BOOTS = ITEMS.register("desert_boots", () -> new ArmorItem(DesertArmorMaterial.DESERT, EquipmentSlot.FEET, new Item.Properties()));
+    public static final RegistryObject<Item> DESERT_HELMET = ITEMS.register("desert_helmet", () -> new ArmorItem(DesertArmorMaterial.DESERT, ArmorItem.Type.HELMET, new Item.Properties()));
+    public static final RegistryObject<Item> DESERT_CHESTPLATE = ITEMS.register("desert_chestplate", () -> new ArmorItem(DesertArmorMaterial.DESERT, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
+    public static final RegistryObject<Item> DESERT_LEGGINGS = ITEMS.register("desert_leggings", () -> new ArmorItem(DesertArmorMaterial.DESERT, ArmorItem.Type.LEGGINGS, new Item.Properties()));
+    public static final RegistryObject<Item> DESERT_BOOTS = ITEMS.register("desert_boots", () -> new ArmorItem(DesertArmorMaterial.DESERT, ArmorItem.Type.BOOTS, new Item.Properties()));
     private ModItems() {}
 }

@@ -28,7 +28,7 @@ public final class ModEntities {
         @SubscribeEvent public static void register(EntityAttributeCreationEvent event) {
             event.put(DUNE_STALKER.get(), Zombie.createAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 26.0D).add(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, 0.29D).build());
             event.put(COLOSSUS.get(), Zombie.createAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 100.0D).add(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, 0.19D).add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE, 13.0D).build());
-            event.put(DESERT_MASTER.get(), WanderingTrader.createAttributes().build());
+            event.put(DESERT_MASTER.get(), net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 20.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).build());
         }
     }
     private ModEntities() {}
