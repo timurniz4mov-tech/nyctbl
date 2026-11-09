@@ -10,6 +10,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.item.Item;
+import ru.sandapocalypse.sandapocalypse.registry.ModEntities;
+import ru.sandapocalypse.sandapocalypse.registry.ModItems;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -95,6 +101,7 @@ public final class ApocalypseEvents {
 
         DesertApocalypseData data = DesertApocalypseData.get(level);
         if (!data.hasStarted() || data.frontierSize() == 0) return;
+        if (level.getGameTime() % 600L == 0L) spawnDesertCreatures(level);
 
         long dayTime = level.getDayTime();
         int dayNumber = (int) Math.max(0L, dayTime / 24000L);
@@ -105,6 +112,36 @@ public final class ApocalypseEvents {
         RandomSource random = level.getRandom();
         for (int i = 0; i < attempts; i++) {
             spreadOneBlock(level, data, random);
+        }
+    }
+
+    private static void spawnDesertCreatures(ServerLevel level) {
+        RandomSource random = level.getRandom();
+        for (ServerPlayer player : level.players()) {
+            if (player.isSpectator() || player.isCreative()) continue;
+            int x = player.blockPosition().getX() + random.nextInt(25) - 12;
+            int z = player.blockPosition().getZ() + random.nextInt(25) - 12;
+            if (!level.hasChunkAt(new BlockPos(x, level.getMinBuildHeight(), z))) continue;
+            int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+            BlockPos pos = new BlockPos(x, y, z);
+            if (!level.getBlockState(pos.below()).is(Blocks.SAND) || !level.isEmptyBlock(pos)) continue;
+            EntityType<?> type = random.nextInt(9) == 0 ? ModEntities.COLOSSUS.get() : ModEntities.DUNE_STALKER.get();
+            Mob mob = (Mob) type.create(level);
+            if (mob != null) { mob.moveTo(x + 0.5D, y, z + 0.5D, random.nextFloat() * 360F, 0F); level.addFreshEntity(mob); }
+        }
+        if (random.nextInt(5) == 0) {
+            ServerPlayer player = level.players().isEmpty() ? null : level.players().get(random.nextInt(level.players().size()));
+            if (player != null) {
+                int x = player.blockPosition().getX() + random.nextInt(31) - 15;
+                int z = player.blockPosition().getZ() + random.nextInt(31) - 15;
+                if (level.hasChunkAt(new BlockPos(x, level.getMinBuildHeight(), z))) {
+                    int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+                    if (level.getBlockState(new BlockPos(x, y - 1, z)).is(Blocks.SAND)) {
+                        var trader = ModEntities.DESERT_MASTER.get().create(level);
+                        if (trader != null) { trader.moveTo(x + 0.5D, y, z + 0.5D, random.nextFloat() * 360F, 0F); level.addFreshEntity(trader); }
+                    }
+                }
+            }
         }
     }
 
@@ -173,6 +210,8 @@ public final class ApocalypseEvents {
         int thirst = Mth.clamp(tag.getInt(THIRST_KEY), 0, 100);
 
         int intervalSeconds = 30;
+        if (player.getInventory().contains(new net.minecraft.world.item.ItemStack(ModItems.DESERT_CHARM.get()))) intervalSeconds += 15;
+        if (player.getInventory().contains(new net.minecraft.world.item.ItemStack(ModItems.SAND_WARD.get()))) intervalSeconds += 5;
         long timeOfDay = player.level().getDayTime() % 24000L;
         if (timeOfDay >= 0L && timeOfDay < 12000L) intervalSeconds -= 5;
         float temperature = player.level().getBiome(player.blockPosition()).value().getBaseTemperature();

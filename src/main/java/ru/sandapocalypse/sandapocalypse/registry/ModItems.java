@@ -9,14 +9,10 @@ import ru.sandapocalypse.sandapocalypse.SandApocalypse;
 import ru.sandapocalypse.sandapocalypse.item.CanteenItem;
 
 public final class ModItems {
-    public static final DeferredRegister<Item> ITEMS =
-            DeferredRegister.create(ForgeRegistries.ITEMS, SandApocalypse.MOD_ID);
-
-    public static final RegistryObject<Item> DESERT_HEART_ITEM = ITEMS.register("desert_heart", () ->
-            new BlockItem(ModBlocks.DESERT_HEART.get(), new Item.Properties()));
-
-    public static final RegistryObject<Item> CANTEEN = ITEMS.register("canteen", () ->
-            new CanteenItem(new Item.Properties().stacksTo(16)));
-
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SandApocalypse.MOD_ID);
+    public static final RegistryObject<Item> DESERT_HEART_ITEM = ITEMS.register("desert_heart", () -> new BlockItem(ModBlocks.DESERT_HEART.get(), new Item.Properties()));
+    public static final RegistryObject<Item> CANTEEN = ITEMS.register("canteen", () -> new CanteenItem(new Item.Properties().stacksTo(16)));
+    public static final RegistryObject<Item> DESERT_CHARM = ITEMS.register("desert_charm", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> SAND_WARD = ITEMS.register("sand_ward", () -> new Item(new Item.Properties().stacksTo(1)));
     private ModItems() {}
 }

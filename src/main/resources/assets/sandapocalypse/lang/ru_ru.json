@@ -9,5 +9,10 @@
   "message.sandapocalypse.apocalypse_started": "§6Песчаный апокалипсис начался! Где-то неподалёку появилось Сердце пустыни.",
   "message.sandapocalypse.core_spawn_failed": "§cНе удалось найти подходящее место для Сердца пустыни. Попробуй создать новый мир.",
   "message.sandapocalypse.not_thirsty": "§bТы пока не хочешь пить.",
-  "message.sandapocalypse.drink": "§bЖажда восстановлена: %s%%"
+  "message.sandapocalypse.drink": "§bЖажда восстановлена: %s%%",
+  "item.sandapocalypse.desert_charm": "Амулет жажды",
+  "item.sandapocalypse.sand_ward": "Песчаный оберег",
+  "entity.sandapocalypse.dune_stalker": "Песчаный охотник",
+  "entity.sandapocalypse.desert_colossus": "Пустынный колосс",
+  "entity.sandapocalypse.desert_master": "Мастер пустыни"
 }
