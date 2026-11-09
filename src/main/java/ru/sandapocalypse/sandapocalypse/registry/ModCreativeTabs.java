@@ -9,6 +9,6 @@ import ru.sandapocalypse.sandapocalypse.SandApocalypse;
 
 public final class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, SandApocalypse.MOD_ID);
-    public static final net.minecraftforge.registries.RegistryObject<CreativeModeTab> MAIN = TABS.register("main", () -> CreativeModeTab.builder().title(Component.translatable("itemGroup.sandapocalypse")).icon(() -> new ItemStack(ModBlocks.DESERT_HEART.get())).displayItems((parameters, output) -> { output.accept(ModBlocks.DESERT_HEART.get()); output.accept(ModItems.CANTEEN.get()); output.accept(ModItems.DESERT_CHARM.get()); output.accept(ModItems.SAND_WARD.get()); }).build());
+    public static final net.minecraftforge.registries.RegistryObject<CreativeModeTab> MAIN = TABS.register("main", () -> CreativeModeTab.builder().title(Component.translatable("itemGroup.sandapocalypse")).icon(() -> new ItemStack(ModBlocks.DESERT_HEART.get())).displayItems((parameters, output) -> { output.accept(ModBlocks.DESERT_HEART.get()); output.accept(ModItems.CANTEEN.get()); output.accept(ModItems.DESERT_CHARM.get()); output.accept(ModItems.SAND_WARD.get()); output.accept(ModItems.STORM_GOGGLES.get()); output.accept(ModItems.DESERT_HELMET.get()); output.accept(ModItems.DESERT_CHESTPLATE.get()); output.accept(ModItems.DESERT_LEGGINGS.get()); output.accept(ModItems.DESERT_BOOTS.get()); }).build());
     private ModCreativeTabs() {}
 }

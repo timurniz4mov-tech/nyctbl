@@ -17,6 +17,8 @@ public class DesertApocalypseData extends SavedData {
 
     private boolean started;
     private long corePosition = 0L;
+    private long stormUntil = 0L;
+    private long nextStorm = 0L;
     private final List<Long> frontier = new ArrayList<>();
     private final Set<Long> knownPositions = new HashSet<>();
 
@@ -32,6 +34,8 @@ public class DesertApocalypseData extends SavedData {
         DesertApocalypseData data = new DesertApocalypseData();
         data.started = tag.getBoolean("started");
         data.corePosition = tag.getLong("core");
+        data.stormUntil = tag.getLong("stormUntil");
+        data.nextStorm = tag.getLong("nextStorm");
         long[] savedFrontier = tag.getLongArray("frontier");
         for (long packed : savedFrontier) {
             if (data.knownPositions.add(packed)) {
@@ -49,6 +53,8 @@ public class DesertApocalypseData extends SavedData {
     public CompoundTag save(CompoundTag tag) {
         tag.putBoolean("started", started);
         tag.putLong("core", corePosition);
+        tag.putLong("stormUntil", stormUntil);
+        tag.putLong("nextStorm", nextStorm);
         long[] positions = new long[frontier.size()];
         for (int i = 0; i < frontier.size(); i++) {
             positions[i] = frontier.get(i);
@@ -71,6 +77,10 @@ public class DesertApocalypseData extends SavedData {
         addFrontier(firstSandBlock);
         setDirty();
     }
+
+    public long getStormUntil() { return stormUntil; }
+    public long getNextStorm() { return nextStorm; }
+    public void setStorm(long until, long next) { stormUntil = until; nextStorm = next; setDirty(); }
 
     public int frontierSize() {
         return frontier.size();

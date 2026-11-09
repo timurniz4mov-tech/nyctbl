@@ -18,6 +18,9 @@ import ru.sandapocalypse.sandapocalypse.registry.ModEntities;
 import ru.sandapocalypse.sandapocalypse.registry.ModItems;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import ru.sandapocalypse.sandapocalypse.SandApocalypse;
@@ -104,6 +107,7 @@ public final class ApocalypseEvents {
         if (level.getGameTime() % 600L == 0L) spawnDesertCreatures(level);
 
         long dayTime = level.getDayTime();
+        updateSandstorm(level, data, dayTime);
         int dayNumber = (int) Math.max(0L, dayTime / 24000L);
         int attempts = Math.min(8, 1 + dayNumber);
         boolean daytime = dayTime % 24000L < 12000L;
@@ -210,15 +214,27 @@ public final class ApocalypseEvents {
         int thirst = Mth.clamp(tag.getInt(THIRST_KEY), 0, 100);
 
         int intervalSeconds = 30;
-        if (player.getInventory().contains(new net.minecraft.world.item.ItemStack(ModItems.DESERT_CHARM.get()))) intervalSeconds += 15;
-        if (player.getInventory().contains(new net.minecraft.world.item.ItemStack(ModItems.SAND_WARD.get()))) intervalSeconds += 5;
+        if (player.getInventory().contains(new ItemStack(ModItems.DESERT_CHARM.get()))) intervalSeconds += 15;
+        if (player.getInventory().contains(new ItemStack(ModItems.SAND_WARD.get()))) intervalSeconds += 5;
+        int armorPieces = 0;
+        if (player.getItemBySlot(EquipmentSlot.HEAD).is(ModItems.DESERT_HELMET.get())) armorPieces++;
+        if (player.getItemBySlot(EquipmentSlot.CHEST).is(ModItems.DESERT_CHESTPLATE.get())) armorPieces++;
+        if (player.getItemBySlot(EquipmentSlot.LEGS).is(ModItems.DESERT_LEGGINGS.get())) armorPieces++;
+        if (player.getItemBySlot(EquipmentSlot.FEET).is(ModItems.DESERT_BOOTS.get())) armorPieces++;
+        intervalSeconds += armorPieces * 6;
         long timeOfDay = player.level().getDayTime() % 24000L;
         if (timeOfDay >= 0L && timeOfDay < 12000L) intervalSeconds -= 5;
         float temperature = player.level().getBiome(player.blockPosition()).value().getBaseTemperature();
         if (temperature >= 1.0F) intervalSeconds -= 7;
+        boolean stormExposure = false;
+        if (player.level() instanceof ServerLevel stormLevel && DesertApocalypseData.get(stormLevel).getStormUntil() > stormLevel.getGameTime() && isNearInfectedSand(player, stormLevel)) {
+            stormExposure = true;
+            intervalSeconds = Math.max(4, intervalSeconds / 3);
+            if (!player.getInventory().contains(new ItemStack(ModItems.STORM_GOGGLES.get()))) intervalSeconds = Math.max(3, intervalSeconds - 3);
+        }
         if (player.isSprinting()) intervalSeconds -= 5;
         if (player.isInWaterRainOrBubble()) intervalSeconds += 8;
-        intervalSeconds = Math.max(10, intervalSeconds);
+        intervalSeconds = Math.max(stormExposure ? 3 : 10, intervalSeconds);
 
         int timer = tag.getInt(THIRST_TIMER_KEY) + 20;
         while (timer >= intervalSeconds * 20 && thirst > 0) {
@@ -245,6 +261,50 @@ public final class ApocalypseEvents {
             tag.putInt(LAST_SYNC_KEY, thirst);
             NetworkHandler.syncThirst(player, thirst);
         }
+    }
+
+
+    private static void updateSandstorm(ServerLevel level, DesertApocalypseData data, long dayTime) {
+        long now = level.getGameTime();
+        long until = data.getStormUntil();
+        long next = data.getNextStorm();
+        if (next == 0L) { next = now + 24000L * (2 + level.getRandom().nextInt(3)); data.setStorm(until, next); }
+        if (until <= now && now >= next) {
+            // A storm lasts between 45 and 90 seconds and returns every 2-4 Minecraft days.
+            until = now + 900 + level.getRandom().nextInt(901);
+            next = until + 24000L * (2 + level.getRandom().nextInt(3));
+            data.setStorm(until, next);
+            for (ServerPlayer player : level.players()) player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§6Началась песчаная буря! Жажда усиливается — ищи укрытие."));
+        }
+        if (until > now) {
+            for (ServerPlayer player : level.players()) {
+                if (isNearInfectedSand(player, level) && !player.getInventory().contains(new ItemStack(ModItems.STORM_GOGGLES.get()))) {
+                    level.sendParticles(ParticleTypes.CLOUD, player.getX(), player.getY() + 1.0D, player.getZ(), 8, 2.5D, 1.0D, 2.5D, 0.04D);
+                }
+            }
+            if (now % 20L == 0L && until - now < 20L) {
+                for (ServerPlayer player : level.players()) player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§eПесчаная буря стихает."));
+            }
+        }
+    }
+
+    private static boolean isNearInfectedSand(ServerPlayer player, ServerLevel level) {
+        BlockPos center = player.blockPosition();
+        for (int dx = -5; dx <= 5; dx += 2) for (int dz = -5; dz <= 5; dz += 2) {
+            BlockPos pos = new BlockPos(center.getX() + dx, center.getY() - 1, center.getZ() + dz);
+            if (level.hasChunkAt(pos) && level.getBlockState(pos).is(Blocks.SAND)) return true;
+        }
+        return false;
+    }
+
+    @SubscribeEvent
+    public static void protectFromDesertMobs(LivingHurtEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (player.getInventory().contains(new ItemStack(ModItems.SAND_WARD.get()))) {
+            var source = event.getSource().getEntity();
+            if (source instanceof net.minecraft.world.entity.monster.Monster) event.setAmount(event.getAmount() * 0.70F);
+        }
+        if (player.getItemBySlot(EquipmentSlot.CHEST).is(ModItems.DESERT_CHESTPLATE.get())) event.setAmount(event.getAmount() * 0.92F);
     }
 
     @SubscribeEvent

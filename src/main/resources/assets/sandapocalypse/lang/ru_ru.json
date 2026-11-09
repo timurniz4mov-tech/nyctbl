@@ -14,5 +14,10 @@
   "item.sandapocalypse.sand_ward": "Песчаный оберег",
   "entity.sandapocalypse.dune_stalker": "Песчаный охотник",
   "entity.sandapocalypse.desert_colossus": "Пустынный колосс",
-  "entity.sandapocalypse.desert_master": "Мастер пустыни"
+  "entity.sandapocalypse.desert_master": "Мастер пустыни",
+  "item.sandapocalypse.storm_goggles": "Очки песчаной бури",
+  "item.sandapocalypse.desert_helmet": "Шлем пустынного стража",
+  "item.sandapocalypse.desert_chestplate": "Нагрудник пустынного стража",
+  "item.sandapocalypse.desert_leggings": "Поножи пустынного стража",
+  "item.sandapocalypse.desert_boots": "Сапоги пустынного стража"
 }
